@@ -11,5 +11,5 @@ Homework 11 Pig
 
 ## Run
 
-    pig input=dblp.json output=answer -x local IKDDhw11.pig
+    pig -param input=dblp.json -param output=output -x local IKDDhw11.pig
 
