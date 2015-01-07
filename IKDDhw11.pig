@@ -1,8 +1,10 @@
-data = load '$input' using PigStorage('"');
-chunks = foreach data generate FLATTEN($3) as word;
-cgroup = group chunks by word;
-counting = foreach cgroup generate COUNT(chunks) as numbers, group;
-
+data = load '$input' using TextLoader() as (text_line:chararray);
+chunks = foreach data generate REGEX_EXTRACT(text_line, '\\[.+\\[(.*)\\].+\\]', 1) as authors;
+tulpes = foreach chunks generate FLATTEN(STRSPLIT(authors, '"', 20)) as authors:chararray;
+singles = foreach tulpes generate FLATTEN(TOBAG(*)) as author;
+singles = foreach singles generate TOTUPLE(*) as author;
+cgroup = group singles by author;
+counting = foreach cgroup generate COUNT(singles) as numbers, group;
 sorted_result = order counting by numbers desc;
-top100_result = limit sorted_result 100;
-store top100_result into '$output';
+top100_result = limit sorted_result 102;
+store singles into '$output';
