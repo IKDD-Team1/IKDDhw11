@@ -7,4 +7,4 @@ cgroup = group singles by author;
 counting = foreach cgroup generate COUNT(singles) as numbers, group;
 sorted_result = order counting by numbers desc;
 top100_result = limit sorted_result 102;
-store singles into '$output';
+store top100_result into '$output';
